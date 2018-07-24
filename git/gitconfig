@@ -1,0 +1,9 @@
+[user]
+	name = Akinjide Bankole
+	email = r@akinjide.me
+	signingkey =
+[commit]
+	gpgsign = true
+[gpg]
+	program = gpg
+[core]

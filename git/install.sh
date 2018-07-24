@@ -5,6 +5,7 @@
 
 # alias git files
 ln -s ~/.git/gitconfig ~/.gitconfig
+ln -s ~/.git/gitignore ~/.gitignore
 ln -s ~/.git/git-commit-template ~/.gitmessage
 
 read -p "Github user.email and press [ENTER]: " -e inputemail
@@ -19,3 +20,4 @@ echo Your signingkey is $inputkey
 git config --global user.email $inputemail
 git config --global user.name $inputname
 git config --global user.signingkey $inputkey
+git config --global core.excludesfile ~/.gitignore
