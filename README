@@ -40,9 +40,12 @@ The below commands will download the project, and setup [git](https://git-scm.co
 ``` bash
 $ cp ~/.dot/git ~/.git
 $ ln -s ~/.git/gitconfig ~/.gitconfig
+$ ln -s ~/.git/gitignore ~/.gitignore
 $ ln -s ~/.git/git-commit-template ~/.gitmessage
 $ git config --global user.email "r@akinjide.me"
 $ git config --global user.name "Akinjide Bankole"
+$ git config --global user.signingkey E41877A3EA43D3
+$ git config --global core.excludesfile ~/.gitignore
 ```
 
 ##### commandline
