@@ -1,0 +1,193 @@
+# GENERAL
+####
+# aliases
+source ~/.zsh/global_aliases
+source ~/.zsh/aliases
+
+# environment variables
+source ~/.zsh/env
+
+
+# EXPORTS
+####
+# Use vim as the default text editor
+export EDITOR=vim
+
+# Path to your oh-my-zsh installation
+export ZSH=$HOME/.oh-my-zsh
+
+
+# PATHS
+####
+# VIM 8.0 @ /opt/local/bin
+# PATH=/opt/local/bin:$PATH
+
+
+# OH-MY-ZSH
+####
+# Set name of the theme to load.
+# Look in ~/.oh-my-zsh/themes/
+# Optionally, if you set this to "random", it'll load a random theme each
+# time that oh-my-zsh is loaded.
+ZSH_THEME="fishy2"
+
+# Uncomment the following line to use case-sensitive completion.
+CASE_SENSITIVE="false"
+
+# Uncomment the following line to use hyphen-insensitive completion. Case
+# sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
+
+# Uncomment the following line to disable bi-weekly auto-update checks.
+DISABLE_AUTO_UPDATE="false"
+
+# Uncomment the following line to change how often to auto-update (in days).
+export UPDATE_ZSH_DAYS=13
+
+# Uncomment the following line to disable colors in ls.
+DISABLE_LS_COLORS="false"
+
+# Uncomment the following line to disable auto-setting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# HIST_STAMPS="mm/dd/yyyy"
+
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(command-not-found git osx jsontools alias-tips)
+
+# export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+# export PATH=$HOME/bin:/usr/local/bin:$PATH 
+# If you come from bash you might have to change your $PATH.
+
+# Active oh-my-zsh.
+source $ZSH/oh-my-zsh.sh
+
+
+# BEHAVIOUR
+####
+# User configuration
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='mvim'
+# fi
+
+# Compilation flags
+# export ARCHFLAGS="-arch x86_64"
+
+# ssh
+# export SSH_KEY_PATH="~/.ssh/dsa_id"
+
+# Use bash style incremental search
+bindkey "^R" history-incremental-search-backward
+
+
+# TOOLS
+####
+# Enable RBENV (https://github.com/rbenv/rbenv).
+# rbenv enable shims and autocomplete
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+
+# Enable NVM (https://github.com/creationix/nvm).
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+# Enable virtualenvwrapper (https://bitbucket.org/dhellmann/virtualenvwrapper).
+export WORKON_HOME=$HOME/.virtualenvs
+export PROJECT_HOME=$HOME/Programs
+source /usr/local/bin/virtualenvwrapper.sh
+
+# Enable Golang
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin/
+export PATH=$PATH:/usr/local/opt/go/libexec/bin
+
+# Brew zsh-syntax-highlighting.
+source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# GNU coreutils
+# PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+
+# This will look for a local `.nvmrc` file in each directory, and will
+# automatically switch to using that version of node if requested.
+autoload -U add-zsh-hook
+load-nvmrc() {
+  if [[ -f .nvmrc && -r .nvmrc ]]; then
+    nvm use
+  elif [[ $(nvm version) != $(nvm version default)  ]]; then
+    echo "Reverting to nvm default version"
+    nvm use default
+  fi
+}
+add-zsh-hook chpwd load-nvmrc
+load-nvmrc
+
+# added by travis gem
+[ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
+
+# Use most for paging because it makes things look prettier.
+# Compile S-Lang and most (http://www.jedsoft.org/most/download.html) to work.
+# export PAGER=most
+
+# GPG Agent
+export GPG_TTY=$(tty)
+export GPGKEY=EA43D3E1
+
+# Gnupg 2.1.x ships an internal gpg-agent which it must use
+#
+# Errors:
+# gpg-agent[10060]: WARNING: "--write-env-file" is an obsolete option - it has no effect
+# gpg-agent: a gpg-agent is already running - not starting a new one
+
+# [ -f "${HOME}/.gpg-agent-info" ] && source ${HOME}/.gpg-agent-info
+# if [ -S "${GPG_AGENT_INFO%%:*}"  ]; then
+#     export GPG_AGENT_INFO
+#     # export SSH_AUTH_SOCK
+# else
+#     eval $( gpg-agent --daemon --write-env-file ~/.gpg-agent-info  )
+# fi
+
+# elinks export
+export PATH="/usr/local/opt/openssl/bin:$PATH"
+
+# PIP command completion
+# pip completion --zsh
+
+# pip zsh completion start
+function _pip_completion {
+  local words cword
+  read -Ac words
+  read -cn cword
+  reply=( $( COMP_WORDS="$words[*]" \
+             COMP_CWORD=$(( cword-1 )) \
+             PIP_AUTO_COMPLETE=1 $words[1] ) )
+}
+compctl -K _pip_completion pip
+# pip zsh completion end

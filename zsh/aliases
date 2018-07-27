@@ -1,0 +1,275 @@
+# GENERAL
+####
+alias gsup="git push --set-upstream origin"
+
+# PROCESS HANDLING
+alias psg="ps aux | grep"
+alias ka9="killall -9"
+alias k9="kill -9"
+
+# CREATE AND CHANGE DIRECTORY 
+function take {
+  mkdir -p $1
+  cd $1
+}
+
+# ZIP ALL
+alias zipAll='for i in */; do zip -r "${i%/}.zip" "$i"; done'
+
+# MOVING AROUND.
+alias ..="cd .."
+alias ~="cd ~" # `cd` is probably faster to type though
+alias -- -="cd -"
+
+# SHOW HUMAN FRIENDLY NUMBERS AND COLORS
+alias df="df -h"
+alias ll="ls -alGh --color=auto"
+alias ls="ls -Gh --color=auto"
+alias du="du -sh"
+alias df="df -h"
+
+# Common shell functions.
+alias tf="tail -f"
+alias l='less'
+alias lh="ls -alt | head"
+alias tmux="TERM=xterm-256color tmux"
+alias cl="clear"
+alias ps="ps aux"
+alias g="git"
+alias h="history"
+alias d='dirs -v | head -10'
+
+# LISTING DIRECTORIES
+## List all files colorized in long format
+alias lc="ls -lF ${colorflag}"
+
+## List all files colorized in long format, including dot files
+alias la="ls -laF ${colorflag}"
+
+## List only directories
+alias lsd="ls -lF ${colorflag} | grep --color=never '^d'"
+
+## Listing files.
+alias lsg="ll | grep"
+
+# QUICK VIMRC EDITING/VIM STUFF.
+alias ve="vim ~/.vimrc"
+alias v="vim"
+
+# QUICK ZSH EDITING.
+alias ze="vim ~/.zshrc"
+alias zr="source ~/.zshrc"
+
+# AWS SSH HELPERS.
+alias assh="ssh -i ~/.aws/akinjide.pem ubuntu@"
+
+# HEROKU BASH HELPERS.
+alias hssh="heroku run bash --app $1"
+
+# PROGRAMS
+####
+# Youtube Downloader (https://rg3.github.io/youtube-dl/).
+alias fork='youtube-dl'
+
+# TMUX (https://tmux.github.io/).
+alias ta='tmux attach -t'
+alias ts='tmux new-session -s'
+alias tl='tmux list-sessions'
+alias tksv='tmux kill-server'
+alias tkss='tmux kill-session -t'
+
+# BREW (https://brew.sh).
+alias brews='brew list -1'
+alias bubo='brew update && brew outdated'
+alias bubc='brew upgrade && brew cleanup'
+alias bubu='bubo && bubc'
+
+# WGET
+alias wget="wget -c"
+
+# GITHUB LINK SHORTENER
+git.io() {
+  emulate -L zsh
+  curl -i -s http://git.io -F "url=$1" | grep "Location" | cut -f 2 -d " "
+}
+
+# QUICK FILE ZIPPING
+alias gz="tar -zcvf"
+
+# PBCOPY PUBLIC KEY
+alias pubkey='more ~/.ssh/id_rsa.pub | pbcopy | echo '\''=> Public key copied to pasteboard.'\'''
+
+## DASH DOCUMENTATION
+function dash {
+  open dash://$1
+}
+
+# SEARCH GOOGLE USING LYNX: BREW INSTALL LUNX
+function google () {
+  lynx "google.com/search?q=$1"
+}
+
+# MOVE OSX DOCK
+function move_dock {
+  if [ "$1" = "left" ]; then
+    defaults write com.apple.dock pinning -string start && killall Dock
+  fi
+  if [ "$1" = "right" ]; then
+    defaults write com.apple.dock pinning -string end && killall Dock
+  fi
+  if [ "$1" = "middle" ]; then
+    defaults write com.apple.dock pinning -string middle && killall Dock
+  fi
+}
+
+# TOGGLE OSX DASHBOARD
+function dashboard_toggle {
+  if [ "$1" = "kill" ]; then
+    defaults write com.apple.dashboard mcx-disabled -boolean YES && killall Dock
+  fi
+  if [ "$1" = "show" ]; then
+    defaults write com.apple.dashboard mcx-disabled -boolean NO && killall Dock
+  fi
+}
+
+# ENCODE A GIVEN IMAGE FILE AS BASE64 AND OUTPUT CSS BACKGROUND PROPERTY TO CLIPBOARD
+function 64enc() {
+  openssl base64 -in $1 | awk -v ext="${1#*.}" '{ str1=str1 $0 }END{ print "background:url(data:image/"ext";base64,"str1");" }'|pbcopy
+  echo "$1 encoded to clipboard"
+}
+
+# IP ADDRESS
+function ip {
+  YELLOW="\033[33m"
+  IP=$(ifconfig | grep 'inet 1' | cut -c 6- | awk 'NR==2 {print $1}')
+  echo -e ${YELLOW}$IP
+  echo $IP | pbcopy
+}
+
+# GREP GIT LOGS
+function logs {
+  git log -p --grep $1
+}
+
+# Parameters: as many paths to files playable by `afplay` as you like
+function tunes () {
+  for arg in $@
+  do
+    echo $arg
+    afplay $arg
+  done
+}
+
+function audio () {
+  if [ $2 ]
+  then
+    name=$2
+  else
+    name=$1
+  fi
+
+  x="$HOME/.youtube-dl-$RANDOM-$RANDOM.mp4"
+  youtube-dl --output $x --format=18 "$1"
+  #ffmpeg -i $x -f mp3 -ab 192000 -vn "$name.mp3"
+  vaudio $x $name
+  rm $x
+  #afplay "$name.mp3"
+}
+
+# MUTE/UNMUTE SOUND
+alias stfu="osascript -e 'set volume output muted true'"
+alias unmute="osascript -e 'set volume output muted false'"
+
+# `wifi on` TO TURN ON WIFI AND `wifi off` TO TURN OFF WIFI
+# `wifi on` to turn wifi on, and `wifi off` to turn it off
+alias wifi="networksetup -setairportpower $(networksetup -listallhardwareports | grep -A 2 'Hardware Port: Wi-Fi' | grep 'Device:' | awk '{print $2}')"
+
+# PYTHON SERVER
+function pyserver() {
+    local port="${1:-8000}"
+    open "http://localhost:${port}/" && python -m SimpleHTTPServer "$port"
+}
+
+# STOPWATCH
+alias timer='echo "Timer started. Stop with Ctrl-D." && date && time cat && date'
+
+# GET OS X SOFTWARE UPDATES, AND UPDATE INSTALLED RUBY GEMS, HOMEBREW, NPM, AND THEIR INSTALLED PACKAGES
+# softwareupdate -i -a;
+# sudo gem update
+# sudo gem update --system
+alias update='sudo brew update; brew upgrade --all; brew cleanup; npm install npm -g; npm update -g'
+
+# STRIP NEW LINES AND COPY TO CLIPBOARD
+alias c="tr -d '\n' | pbcopy"
+
+# EMPTY THE TRASH ON ALL MOUNTED VOLUMES AND THE MAIN HDD.
+# Also, clear Apple’s System Logs to improve shell startup speed.
+# Finally, clear download history from quarantine. https://mths.be/bum
+alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl; sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent'"
+
+# SHOW/HIDE HIDDEN FILES IN FINDER
+alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
+alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
+
+# SHOW/HIDE ALL DESKTOP ICONS (USEFUL WHEN PRESENTING)
+alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
+alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
+
+# ENABLE/DISABLE SPOTLIGHT
+alias spotoff="sudo mdutil -a -i off"
+alias spoton="sudo mdutil -a -i on"
+
+# RECURSIVELY DELETE `.DS_Store` FILES
+alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
+
+# IP addresses
+alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
+alias localip="ipconfig getifaddr en0"
+alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
+
+# FLUSH DIRECTORY SERVICE CACHE
+alias flush="dscacheutil -flushcache && killall -HUP mDNSResponder"
+
+# CLEAN UP LAUNCHSERVICES TO REMOVE DUPLICATES IN THE 'Open With' MENU
+alias lscleanup="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
+
+# VIEW HTTP TRAFFIC
+alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
+alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
+
+# KILL ALL THE TABS IN CHROME TO FREE UP MEMORY
+# [C] explained: http://www.commandlinefu.com/commands/view/402/exclude-grep-from-your-grepped-output-of-ps-alias-included-in-description
+alias chromekill="ps ux | grep '[C]hrome Helper --type=renderer' | grep -v extension-process | tr -s ' ' | cut -d ' ' -f2 | xargs kill"
+
+# RELOAD THE SHELL (i.e. INVOKE AS A LOGIN SHELL)
+alias reload="exec $SHELL -l"
+
+# PYTHON HELPERS.
+alias pt="python setup.py test"
+
+# BATTERY PERCENTAGE
+function battery_pct() {
+  local smart_battery_status="$(ioreg -rc "AppleSmartBattery")"
+  typeset -F maxcapacity=$(echo $smart_battery_status | grep '^.*"MaxCapacity"\ =\ ' | sed -e 's/^.*"MaxCapacity"\ =\ //')
+  typeset -F currentcapacity=$(echo $smart_battery_status | grep '^.*"CurrentCapacity"\ =\ ' | sed -e 's/^.*CurrentCapacity"\ =\ //')
+  integer i=$(((currentcapacity/maxcapacity) * 100))
+  echo $i
+}
+
+# BATTERY TIME LEFT
+function battery_time_remaining() {
+  local smart_battery_status="$(ioreg -rc "AppleSmartBattery")"
+  if [[ $(echo $smart_battery_status | grep -c '^.*"ExternalConnected"\ =\ No') -eq 1 ]] ; then
+    timeremaining=$(echo $smart_battery_status | grep '^.*"AvgTimeToEmpty"\ =\ ' | sed -e 's/^.*"AvgTimeToEmpty"\ =\ //')
+    if [ $timeremaining -gt 720 ] ; then
+      echo "::"
+    else
+      echo "~$((timeremaining / 60)):$((timeremaining % 60))"
+    fi
+  else
+    echo "∞"
+  fi
+}
+
+# EXIT
+alias x="exit"

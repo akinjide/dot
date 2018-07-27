@@ -2,7 +2,7 @@
 
 This repository is personalized for my own usage, but you can use them however you'd like.
 
-## Installation:
+## Installation
 
 ``` bash
 $ git clone git@github.com:akinjide/dot.git ~/.dot
@@ -11,7 +11,7 @@ $ git clone git@github.com:akinjide/dot.git ~/.dot
 
 ### pip dotfiles.
 
-Commands below assume you already have [`pip`](https://pip.pypa.io/en/stable/) installed on your operating system
+Commands below assume you already have [pip](https://pip.pypa.io/en/stable/) installed on your operating system
 and [PyPI](https://pypi.python.org/pypi).
 
 ``` bash
@@ -28,7 +28,7 @@ $ vim ~/.pypirc
 
 ### git dotfiles.
 
-Commands below assume you already have [`git`](https://git-scm.com/downloads) installed on your operating system.
+Commands below assume you already have [git](https://git-scm.com/downloads) installed on your operating system.
 
 #### ssh
 
@@ -62,7 +62,7 @@ $ sudo install.sh
 
 Commands below assume you already have
 
-  - [`zsh`](http://www.zsh.org/)
+  - [zsh](http://www.zsh.org/)
   - [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh)
   - [rbenv](https://github.com/rbenv/rbenv)
   - [autoenv](https://github.com/kennethreitz/autoenv)
