@@ -58,6 +58,7 @@ If it still won't work, you can run the script like this:
 $ sudo install.sh
 ```
 
+
 ### zsh dotfiles.
 
 Commands below assume you already have
@@ -66,13 +67,10 @@ Commands below assume you already have
   - [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh)
   - [rbenv](https://github.com/rbenv/rbenv)
   - [autoenv](https://github.com/kennethreitz/autoenv)
-  - [vim](https://github.com/akinjide/dot-vim)
   - [node](https://nodejs.org/en/)
   - [nvm](https://github.com/creationix/nvm)
   - [pip](https://pypi.python.org/pypi/pip)
-  - [tmux](https://github.com/akinjide/dot-tmux)
   - [brew](http://brew.sh/)
-  - [git](https://github.com/akinjide/dot-git)
   - [virtualenvwrapper](https://bitbucket.org/dhellmann/virtualenvwrapper)
 
 installed on your operating system.
@@ -99,3 +97,6 @@ export secretJwt=VALUE
 ```
 
 Run `source ~/.zshrc` or `zr` if you've setup ZSH alias to reload
+
+
+### vim dotfiles.
