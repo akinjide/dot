@@ -1,0 +1,33 @@
+#!/bin/zsh
+
+
+# Battery Percentage.
+function battery_pct() {
+  local smart_battery_status="$(ioreg -rc "AppleSmartBattery")"
+
+  if [[ $(echo $smart_battery_status | grep -c '^.*"ExternalConnected"\ =\ No') -eq 1 ]] ; then
+		typeset -F maxcapacity=$(echo $smart_battery_status | grep '^.*"MaxCapacity"\ =\ ' | sed -e 's/^.*"MaxCapacity"\ =\ //')
+		typeset -F currentcapacity=$(echo $smart_battery_status | grep '^.*"CurrentCapacity"\ =\ ' | sed -e 's/^.*CurrentCapacity"\ =\ //')
+		integer i=$(((currentcapacity/maxcapacity) * 100))
+		echo "$(($i))% "
+  else
+    echo "⚡︎"
+  fi
+}
+
+battery_pct
+
+
+#!/bin/zsh
+
+
+# Battery Percentage.
+function battery_pct() {
+  local smart_battery_status="$(ioreg -rc "AppleSmartBattery")"
+  typeset -F maxcapacity=$(echo $smart_battery_status | grep '^.*"MaxCapacity"\ =\ ' | sed -e 's/^.*"MaxCapacity"\ =\ //')
+  typeset -F currentcapacity=$(echo $smart_battery_status | grep '^.*"CurrentCapacity"\ =\ ' | sed -e 's/^.*CurrentCapacity"\ =\ //')
+  integer i=$(((currentcapacity/maxcapacity) * 100))
+  echo $i
+}
+
+battery_pct
