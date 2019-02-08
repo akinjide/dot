@@ -1,0 +1,17 @@
+DOT
+
+
+Akinjide Bankole
+r@akinjide.me
+
+
+With this repo and script included, setup local development environment with all the necessary services and is personalised for my own usage; intended to be used to bootstrap new or existing MacOS environment including core services such as git, pip, tmux, vim and zsh. You can use this script however you like.
+
+You will need to clonse this repository [git clone git@github.com:akinjide/dot.git ~/dot] and run either automatic or manual setup.
+
+Automatic Setup (recommended): This script will detect and run automatically. Use [./boot.sh start] or [./boot.sh help]
+
+Manual Setup: Running manually and commands executed assumes you already have neccessary packages installed on your operating system.
+
+pip: copy pip directory, [cp ~/dot/pip ~/.pip]; create a symbolic link from your copied pip directory, [ln -s ~/.pip/pypirc ~/.pypirc] and [ln -s ~/.pip/pip.conf ~/.pip.conf]; edit the .pypirc file, replacing username and add password [vim ~/.pip/pypirc].
+
