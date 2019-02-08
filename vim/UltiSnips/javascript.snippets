@@ -1,0 +1,40 @@
+snippet strict "Enable strict mode." b
+'use strict';
+endsnippet
+
+snippet e "A minimal Express.js server." b
+"use strict";
+
+const express = require('express');
+
+const app = express();
+
+app.listen(process.env.PORT || 3000);
+endsnippet
+
+snippet esp "A minimal Stormpath server." b
+const express = require('express');
+const stormpath = require('express-stormpath');
+
+const app = express();
+
+app.use(stormpath.init(app, {
+  application: {
+    href: '${1:https://api.stormpath.com/v1/applications/xxx}'
+  },
+  website: true
+
+}));
+
+app.on('stormpath.ready', function() {
+  app.listen(process.env.PORT || 3000);
+});
+endsnippet
+
+snippet r "Require a module." b
+const ${1} = require("${0:$1}");
+endsnippet
+
+snippet l "Log some text." b
+console.log("${1}");
+endsnippet
