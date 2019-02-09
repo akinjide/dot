@@ -5,13 +5,20 @@ Akinjide Bankole
 r@akinjide.me
 
 
-With this repo and script included, setup local development environment with all the necessary services and is personalised for my own usage; intended to be used to bootstrap new or existing MacOS environment including core services such as git, pip, tmux, vim and zsh. You can use this script however you like.
+With this repo and script included, setup local development environment with all the necessary services and is personalised for my own usage; intended to be used to bootstrap new or existing MacOS environment including core services such as git, pip, tmux, vim and zsh.
 
-You will need to clonse this repository [git clone git@github.com:akinjide/dot.git ~/dot] and run either automatic or manual setup.
+TMUX, VIM, ZSH is a modification of [https://github.com/rdegges] and optimized for my own usage. You can use this script however you like but you will need to clone this repository [git clone git@github.com:akinjide/dot.git $HOME/dot] and run either automatic or manual setup.
 
 Automatic Setup (recommended): This script will detect and run automatically. Use [./boot.sh start] or [./boot.sh help]
 
-Manual Setup: Running manually and commands executed assumes you already have neccessary packages installed on your operating system.
+Manual Setup: Running manually and commands executed assumes you already have neccessary packages installed on your operating system. You'll need to install XCode from Mac AppStore and run it to configure, install Homebrew, Python, Ruby, Docker, NodeJS, Tmux, Git, Go, Zsh, PIP and AWS CLI.
 
-pip: copy pip directory, [cp ~/dot/pip ~/.pip]; create a symbolic link from your copied pip directory, [ln -s ~/.pip/pypirc ~/.pypirc] and [ln -s ~/.pip/pip.conf ~/.pip.conf]; edit the .pypirc file, replacing username and add password [vim ~/.pip/pypirc].
+pip: copy pip directory, [cp $HOME/dot/pip $HOME/.pip]; create a symbolic link from your copied pip directory, [ln -s $HOME/.pip/pypirc $HOME/.pypirc] and [ln -s $HOME/.pip/pip.conf $HOME/.pip.conf]; edit the .pypirc file, replacing username and add password [vim $HOME/.pip/pypirc].
 
+git: copy git directory, [cp $HOME/dot/git $HOME/.git]; create a symbolic link from your copied git directory, [ln -s $HOME/.git/gitconfig $HOME/.gitconfig], [ln -s $HOME/.git/gitignore $HOME/.gitignore] and [ln -s $HOME/.git/git-commit-template $HOME/.gitmessage]; use [git config --global] to replace [user.email], [user.name], [user.signingkey] and [core.excludesfile] for global ignore (i.e. git config --global user.email "r@akinjide.me").
+
+zsh: copy zsh directory, [cp $HOME/dot/zsh $HOME/.zsh] and create a symbolic link, [ln -s $HOME/.zsh/zshrc $HOME/.zshrc]. You can include an env file in zsh directory [vim $HOME/.zsh/env] to include global wide configuration variables (i.e. export SECRET=<value>) and reload zsh configuration using [zr] or [source $HOME/.zshrc].
+
+vim: copy vim directory, [cp $HOME/dot/vim $HOME/.vim] and create a symbolic link, [ln -s $HOME/.vim/vimrc $HOME/.vimrc]. Initialize [git submodule init] and update [git submodule update] the git submodule and install plugins [vim +PluginInstall +qall].
+
+tmux: optimized for VIM users and have lots of nice split window functionality assigned to common VIM key mappings -- if you are a VIM user, it should be intuitive. copy tmux directory, [cp $HOME/dot/tmux $HOME/.vim] and create a symbolic link, [ln -s $HOME/.tmux/tmux.conf $HOME/.tmux.conf].
