@@ -6,6 +6,8 @@ ARGS=$@
 HOME_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # script dir relative path
 PARENT_DIR="$(dirname "$HOME_DIR")"
 
+SAVED_CHOICE=""
+
 REQUIRED_DOTS=(
     git
     pip
@@ -182,15 +184,15 @@ function check_repos {
     cd $PARENT_DIR
 
     for repo in "${REQUIRED_GIT_REPOS[@]}"; do
-        repo_dir_name="$(echo ${repo} | rev | cut -d/ -f1 | rev)"
+        repo_name="$(echo ${repo} | rev | cut -d/ -f1 | rev)"
 
-        if [ ! -d "${PARENT_DIR}/${repo_dir_name}" ]; then
-            printf "Could not find project '${repo_dir_name}'... git clone project? (ssh|https|cancel) "
+        if [ ! -d "${PARENT_DIR}/${repo_name}" ]; then
+            printf "Could not find project '${repo_name}'... git clone project? (ssh|https|cancel) "
             read response
 
-            if [ $response == "ssh" ]; then
-                git clone git@github.com:akinjide/${repo_dir_name}.git
-            elif [ $response == "https" ]; then
+            if [[ $response == "ssh" ]]; then
+                git clone git@github.com:akinjide/${repo_name}.git
+            elif [[ $response == "https" ]]; then
                 git clone $repo
             else
                 exit 1
@@ -231,22 +233,26 @@ function dot_configure {
 }
 
 function brew_install {
-    printf "brew info or install? (info|install) "
-    read response
+    for pkg in "${REQUIRED_BREW[@]}"; do
+        response=""
+        if [ -z $SAVED_CHOICE ]; then
+            printf "brew info or install? (info|install) "
+            read response
+        else
+            printf "\n"
+            response=$SAVED_CHOICE
+        fi
 
-    # TODO: prevent double iteration by remembering user choice.
-
-    if [ $response == "info" ]; then
-        for pkg in "${REQUIRED_BREW[@]}"; do
+        if [[ $response == "info" ]]; then
+            SAVED_CHOICE="info"
             brew info $pkg
-        done
-    elif [ $response == "install" ]; then
-        for pkg in "${REQUIRED_BREW[@]}"; do
+        elif [[ $response == "install" ]]; then
+            SAVED_CHOICE="install"
             brew install $pkg
-        done
-    else
-        exit 1
-    fi
+        else
+            exit 1
+        fi
+    done
 }
 
 function dependencies {
