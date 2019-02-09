@@ -88,7 +88,9 @@ REQUIRED_PROGRAM_URL=(
     "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip"
 )
 
+# TODO
 # virtualenvwrapper -> https://bitbucket.org/dhellmann/virtualenvwrapper
+# add installation of oh_my_zsh theme fishy2. https://github.com/akinjide/fishy2
 
 # sub-routines
 function help {
@@ -184,14 +186,14 @@ function check_repos {
     cd $PARENT_DIR
 
     for repo in "${REQUIRED_GIT_REPOS[@]}"; do
-        repo_name="$(echo ${repo} | rev | cut -d/ -f1 | rev)"
+        REPO_NAME="$(echo ${repo} | rev | cut -d/ -f1 | rev)"
 
-        if [ ! -d "${PARENT_DIR}/${repo_name}" ]; then
-            printf "Could not find project '${repo_name}'... git clone project? (ssh|https|cancel) "
+        if [ ! -d "${PARENT_DIR}/${REPO_NAME}" ]; then
+            printf "Could not find project '${REPO_NAME}'... git clone project? (ssh|https|cancel) "
             read response
 
             if [[ $response == "ssh" ]]; then
-                git clone git@github.com:akinjide/${repo_name}.git
+                git clone git@github.com:akinjide/${REPO_NAME}.git
             elif [[ $response == "https" ]]; then
                 git clone $repo
             else
