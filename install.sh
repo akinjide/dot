@@ -23,6 +23,11 @@ git config --global user.name $GITHUB_NAME
 git config --global user.signingkey $SIGNING_KEY
 git config --global core.excludesfile ~/.gitignore
 
+# By default, Git uses whatever you’ve set as your
+# default text editor via one of the shell environment
+# variables VISUAL or EDITOR
+# git config --global core.editor vim
+
 # PIP
 # alias pip files
 ln -s ~/.pip/pypirc ~/.pypirc

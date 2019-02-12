@@ -58,6 +58,8 @@ REQUIRED_PROGRAM=(
     "TMUX"
     "PIP"
     "AWS CLI"
+    "NVM"
+    "OH MY ZSH"
 )
 
 REQUIRED_PROGRAM_PATH=(
@@ -72,6 +74,8 @@ REQUIRED_PROGRAM_PATH=(
     "/usr/local/bin/tmux"
     "/usr/local/bin/pip"
     "/usr/local/bin/aws"
+    "$HOME/.nvm"
+    "$HOME/.oh-my-zsh"
 )
 
 REQUIRED_PROGRAM_URL=(
@@ -86,39 +90,67 @@ REQUIRED_PROGRAM_URL=(
     "https://tmux.github.io/"
     "https://pip.pypa.io/en/stable/installing/"
     "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip"
+    "https://github.com/creationix/nvm"
+    "https://github.com/robbyrussell/oh-my-zsh"
+)
+
+REQUIRED_BACKUP=(
+    aws
+    mongorc.js
+    bashrc
+    vimrc
+    zshrc
+    gemrc
+    gnupg
+    ssh
+    travis
+    gitignore
+    gitconfig
+    vim
+    git
+    pip
+    tmux
+    zsh
+)
+
+REQUIRED_ARGS=(
+    start
+    copy
+    install
+    github
+    backup
 )
 
 # TODO
 # virtualenvwrapper -> https://bitbucket.org/dhellmann/virtualenvwrapper
-# add installation of oh_my_zsh theme fishy2. https://github.com/akinjide/fishy2
 
-# sub-routines
-function help {
-    printf "\nUSAGE: boot.sh (start|copy|install|github)\n"
+help () {
+    printf "\nUSAGE: boot.sh (start|copy|install|github|backup)\n"
 }
 
-function check {
+check () {
     for (( i = 0; i < ${#REQUIRED_PROGRAM[@]}; ++i )); do
         PROGRAM=${REQUIRED_PROGRAM[i]}
         PATH=${REQUIRED_PROGRAM_PATH[i]}
         URL=${REQUIRED_PROGRAM_URL[i]}
 
-        if [ ! -f $PATH ]; then
-            printf "$PROGRAM was NOT found! You may download here:\n$URL\n\nOpen in browser? [y/n] "
-            read response
-
-            if [[ $response =~ ^[Yy]$ ]]; then
-                open "$URL" # will open URL in browser on MacOS
-            fi
-
-            exit 1
+        if [ -d $PATH ] || [ -f $PATH ]; then
+            echo "$PROGRAM found!"
+            continue
         fi
 
-        echo "$PROGRAM found!"
+        printf "$PROGRAM was NOT found! Install, then re-run this script! You may download here:\n$URL\n\nOpen in browser? [y/n] "
+        read response
+
+        if [[ $response =~ ^[Yy]$ ]]; then
+            open "$URL" # will open URL in browser on MacOS
+        fi
+
+        exit 1
     done
 }
 
-function xcode {
+xcode () {
     if ! type xcode-select >&- && xpath=$( xcode-select --print-path ) && test -d "${xpath}" && test -x "${xpath}" ; then
        #... isn't correctly installed
        echo "XCode and Command Line Tools needs to be installed first! Download in Mac App Store."
@@ -126,46 +158,7 @@ function xcode {
     fi
 }
 
-function check_oh_my_zsh {
-    URL="https://github.com/robbyrussell/oh-my-zsh"
-
-    cd ~
-    if [ ! -d ".oh-my-zsh" ]; then
-        printf "Could NOT find oh_my_zsh! You may download here:\n${URL}\n\nOpen in browser? [y/n] "
-        read response
-
-        if [[ $response =~ ^[Yy]$ ]]; then
-            open "${URL}" # will open URL in browser on MacOS
-        else
-            exit 1
-        fi
-    fi
-
-    echo "oh_my_zsh found!"
-    cd $HOME_DIR
-}
-
-function check_nvm {
-    URL="https://github.com/creationix/nvm"
-    PATH="/usr/local/bin/tmux"
-
-    cd ~
-    if [ ! -d ".nvm" ]; then
-        printf "Could NOT find nvm! You may download here:\n${URL}\n\nOpen in browser? [y/n] "
-        read response
-
-        if [[ $response =~ ^[Yy]$ ]]; then
-            open "${URL}" # will open URL in browser on MacOS
-        else
-            exit 1
-        fi
-    fi
-
-    echo "nvm found!"
-    cd $HOME_DIR
-}
-
-function check_aws_configure {
+aws_configure () {
     cd ~
 
     if [ ! -d ".aws" ]; then
@@ -182,7 +175,7 @@ function check_aws_configure {
     cd $HOME_DIR
 }
 
-function check_repos {
+github () {
     cd $PARENT_DIR
 
     for repo in "${REQUIRED_GIT_REPOS[@]}"; do
@@ -205,10 +198,10 @@ function check_repos {
     cd $HOME_DIR
 }
 
-function dot_copy {
+dot_copy () {
     for dot in "${REQUIRED_DOTS[@]}"; do
         if [ ! -d "$HOME/.${dot}" ]; then
-            printf "Could not find '.${dot}'... cp ${dot} -> ${HOME}? (y|n) "
+            printf "Could not find '.${dot}'... cp ${dot} > ${HOME}? (y|n) "
             read response
 
             if [[ $response =~ ^[Yy]$ ]]; then
@@ -220,7 +213,7 @@ function dot_copy {
     done
 }
 
-function dot_configure {
+dot_configure () {
     for dot in "${REQUIRED_DOTS[@]}"; do
         if [ ! -d "$HOME/.${dot}" ]; then
             echo "Could NOT find .${dot}! Run ./boot.sh copy"
@@ -234,7 +227,30 @@ function dot_configure {
     cd $HOME_DIR
 }
 
-function brew_install {
+zsh_configure () {
+    cd $PARENT_DIR
+
+    repo="$(echo $1 | rev | cut -d/ -f1 | rev)"
+    if [ ! -d "${PARENT_DIR}/${repo}" ]; then
+        printf "could not find project! "
+        git clone https://github.com/$1.git
+    fi
+
+    cd "$PARENT_DIR/$repo"
+    cp themes/* $HOME/.oh-my-zsh/custom/themes
+    rm -rfv "$PARENT_DIR/$repo"
+    cd $HOME_DIR
+}
+
+brew_install () {
+    printf "brew update and cleanup? (y|n) "
+    read response
+
+    if [[ $response =~ ^[Yy]$ ]]; then
+        brew update
+        brew cleanup
+    fi
+
     for pkg in "${REQUIRED_BREW[@]}"; do
         response=""
         if [ -z $SAVED_CHOICE ]; then
@@ -257,47 +273,72 @@ function brew_install {
     done
 }
 
-function dependencies {
+gnucore_install () {
+    GNU_CORE=(
+        # Install GNU core utilities (those that come with OS X are outdated)
+        # use --with-default-names for gnu-sed, gnu-tar, gnu-indent
+        # gnu-which, gnu-grep
+        coreutils
+        gnu-sed
+        gnu-tar
+        gnu-indent
+        gnu-which
+        gnu-grep
+        # Install GNU `find`, `locate`, `updatedb`, and `xargs`, g-prefixed
+        findutils
+        bash
+    )
+
+    brew install ${GNU_CORE[@]} --interactive
+}
+
+backup () {
+    for file in "${REQUIRED_BACKUP[@]}"; do
+        echo "Backing up ${HOME}/.${file} to ${HOME}/dotbak"
+        mkdir -p ~/dotbak
+        mv ~/.$file ~/dotbak/
+    done
+}
+
+dependencies () {
     xcode
     check
-    check_oh_my_zsh
-    check_nvm
-    check_docker
-    check_aws_configure
-    check_repos
+    aws_configure
+    github
 }
 
-
-function complete_exit {
-   printf "\n\nCOMPLETE!\n"
-   exit 0
+start () {
+    dependencies
+    brew_install
+    dot_copy
+    dot_configure
+    zsh_configure 'akinjide/fishy2'
 }
 
-function main {
+copy () {
+    dot_copy
+    dot_configure
+}
+
+install () {
+    check
+    brew_install
+}
+
+main () {
     if [ "$ARG_COUNT" -ne 1 ]; then
         help
     else
-        if [ "${ARGS[0]}" == "start" ]; then
-            dependencies
-            brew_install
-            dot_copy
-            dot_configure
-            complete_exit
-        elif [ "${ARGS[0]}" == "copy" ]; then
-            dot_copy
-            dot_configure
-            complete_exit
-        elif [ "${ARGS[0]}" == "install" ]; then
-            check
-            brew_install
-            complete_exit
-        elif [ "${ARGS[0]}" == "github" ]; then
-            check_repos
-            complete_exit
-        else
-            echo "Invalid Command!"
-            help
-        fi
+        for arg in "${REQUIRED_ARGS[@]}"; do
+            if [[ "${ARGS[0]}" == $arg ]]; then
+                $arg
+                printf "\n\nCOMPLETE!\n"
+                exit 0
+            fi
+        done
+
+        echo "Invalid Command!"
+        help
     fi
 }
 
