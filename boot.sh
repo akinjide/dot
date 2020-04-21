@@ -30,6 +30,7 @@ REQUIRED_BREW=(
     gnupg
     go
     heroku
+    httpie
     hugo
     ncdu
     nmap

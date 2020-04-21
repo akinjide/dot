@@ -91,6 +91,8 @@ plugins=(
   osx
   jsontools
   alias-tips
+  git-extras
+  jira
 )
 
 # export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
@@ -146,6 +148,7 @@ source /usr/local/bin/virtualenvwrapper.sh
 # Enable Golang
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin/
+export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:/usr/local/opt/go/libexec/bin
 
 # Brew zsh-syntax-highlighting.
@@ -223,3 +226,9 @@ if [ -f ${HOME}/google-cloud-sdk/path.zsh.inc" ]; then source "${HOME}/google-cl
 if [ -f "${HOME}/google-cloud-sdk/completion.zsh.inc" ]; then source "${HOME}/google-cloud-sdk/completion.zsh.inc"; fi
 
 source <(kubectl completion zsh)
+
+# Opting out Homebrew Analytics
+export HOMEBREW_NO_ANALYTICS=1
+
+# Go Version Manager
+[[ -s "/Users/akinjide/.gvm/scripts/gvm" ]] && source "/Users/akinjide/.gvm/scripts/gvm"
